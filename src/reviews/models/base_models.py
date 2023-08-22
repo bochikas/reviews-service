@@ -19,14 +19,3 @@ class TitleUUIDMixin(UUIDMixin):
 
     class Meta:
         abstract = True
-
-
-class CreatedMixin(UUIDMixin):
-    """Миксин."""
-
-
-    class Meta:
-        abstract = True
-
-
-
