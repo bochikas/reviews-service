@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False, editable=False)),
                 ('title', models.CharField(help_text='Добавьте название', max_length=150, verbose_name='Название')),
                 ('slug', models.SlugField(help_text='Укажите адрес для категории', unique=True, verbose_name='Адрес для категории')),
                 ('img', models.ImageField(blank=True, help_text='Выберите изображение категории', null=True, upload_to=reviews.utils.get_path_upload_image, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['jpg', 'png']), reviews.validators.validate_image_size], verbose_name='Изображение категории')),
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Chat',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False, editable=False)),
                 ('members', models.ManyToManyField(to=settings.AUTH_USER_MODEL, verbose_name='Участники')),
             ],
             options={
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Product',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False, editable=False)),
                 ('title', models.CharField(help_text='Добавьте название', max_length=150, verbose_name='Название')),
                 ('slug', models.SlugField(unique=True, verbose_name='Ссылка на продукт/услугу')),
                 ('active', models.BooleanField(default=False)),
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Subscriptions',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False, editable=False)),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Создано')),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subscribers', to=settings.AUTH_USER_MODEL, verbose_name='Автор')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subscriptions', to=settings.AUTH_USER_MODEL, verbose_name='Подписчик')),
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Review',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False, editable=False)),
                 ('title', models.CharField(help_text='Добавьте название', max_length=150, verbose_name='Название')),
                 ('slug', models.SlugField(unique=True, verbose_name='Ссылка')),
                 ('text', models.TextField(help_text='Добавьте текст отзыва', verbose_name='Текст отзыва')),
@@ -102,7 +102,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Message',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False, editable=False)),
                 ('text', models.TextField(verbose_name='Сообщение')),
                 ('pub_date', models.DateTimeField(default=django.utils.timezone.now)),
                 ('is_read', models.BooleanField(default=False, verbose_name='Прочитано')),
@@ -118,7 +118,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Comment',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False, editable=False)),
                 ('text', models.TextField(help_text='Добавьте текст комментария', verbose_name='Текст комментария')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Дата комментария')),
                 ('active', models.BooleanField(default=False, verbose_name='Одобрен?')),
@@ -135,7 +135,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Bookmark',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False, editable=False)),
                 ('review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bookmarks', to='reviews.review')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bookmarks', to=settings.AUTH_USER_MODEL)),
             ],
@@ -146,7 +146,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AdditionalImage',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False, editable=False)),
                 ('image', models.ImageField(upload_to=reviews.utils.get_path_upload_image, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['jpg', 'png'])], verbose_name='Фото')),
                 ('review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='additional_images', to='reviews.review')),
             ],
