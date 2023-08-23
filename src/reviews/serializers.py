@@ -8,6 +8,8 @@ User = get_user_model()
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
+    """Сериализатор создания пользователя."""
+
     email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())], required=False)
 
     def validate_password(self, value):
@@ -15,7 +17,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'password',)
+        fields = ('email', 'username', 'first_name', 'last_name', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -24,3 +26,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class IdResponseSerializer(serializers.Serializer):
+    """Сериализатор ответа после создания чего-либо."""
+
+    id = serializers.IntegerField(min_value=1)
