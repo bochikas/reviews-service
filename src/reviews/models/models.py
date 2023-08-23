@@ -3,12 +3,12 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
 
-from reviews.models.base_models import TitleUUIDMixin, UUIDMixin
+from reviews.models.base_models import ActiveMixin, TitleUUIDMixin, UUIDMixin
 from reviews.validators import validate_image_size
 from reviews.utils import get_path_upload_image
 
 
-class Category(TitleUUIDMixin):
+class Category(TitleUUIDMixin, ActiveMixin):
     """Категория."""
 
     parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Надкатегория',
@@ -16,7 +16,6 @@ class Category(TitleUUIDMixin):
     img = models.ImageField(upload_to=get_path_upload_image, verbose_name='Изображение категории', blank=True,
                             null=True, help_text='Выберите изображение категории', validators=[
                                 FileExtensionValidator(allowed_extensions=['jpg', 'png']), validate_image_size])
-    active = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Категория'
@@ -31,12 +30,11 @@ class Category(TitleUUIDMixin):
         return ' -> '.join(full_path[::-1])
 
 
-class Product(TitleUUIDMixin):
+class Product(TitleUUIDMixin, ActiveMixin):
     """Продукт/Услуга."""
 
     category = models.ForeignKey(Category, verbose_name='Категория продукта/услуги', related_name='products',
                                  on_delete=models.PROTECT)
-    active = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Продукт/Услуга'
@@ -73,8 +71,8 @@ class Review(TitleUUIDMixin):
     score = models.PositiveSmallIntegerField(verbose_name='Оценка', choices=ScoreType.choices, default=3)
     pluses = models.TextField(verbose_name='Достоинства', blank=False, help_text='Достоинства')
     minuses = models.TextField('Недостатки', blank=False, help_text='Недостатки')
-    is_active = models.BooleanField(default=False, verbose_name='Опубликовано')
-    is_draft = models.BooleanField(default=False, verbose_name='Черновик')
+    active = models.BooleanField(default=False, verbose_name='Опубликовано')
+    draft = models.BooleanField(default=False, verbose_name='Черновик')
     location = models.CharField(max_length=50, verbose_name='Расположение объекта')
 
     class Meta:
@@ -159,7 +157,7 @@ class Message(UUIDMixin):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages')
     text = models.TextField(verbose_name='Сообщение')
     pub_date = models.DateTimeField(default=timezone.now)
-    is_read = models.BooleanField(verbose_name='Прочитано', default=False)
+    read = models.BooleanField(verbose_name='Прочитано', default=False)
 
     class Meta:
         verbose_name = 'Участник'

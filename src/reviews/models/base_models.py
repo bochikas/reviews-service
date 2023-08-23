@@ -13,9 +13,18 @@ class UUIDMixin(models.Model):
 
 
 class TitleUUIDMixin(UUIDMixin):
-    """Миксин."""
+    """Миксин с названием."""
 
     title = models.CharField(verbose_name='Название', max_length=150, help_text='Добавьте название')
+
+    class Meta:
+        abstract = True
+
+
+class ActiveMixin(UUIDMixin):
+    """Миксин с полем 'активно'."""
+
+    active = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
