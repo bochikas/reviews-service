@@ -1,11 +1,12 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse
-from rest_framework import status, response
-from rest_framework.views import APIView
+from rest_framework import permissions, response, status, views, viewsets
 
 from reviews import serializers as api_serializers
+from reviews import models as api_models
+from reviews.permissions import IsAuthorOrReadOnlyPermission
 
 
-class CreateUserView(APIView):
+class CreateUserView(views.APIView):
     """Регистрация пользователей."""
 
     serializer = api_serializers.CreateUserSerializer
@@ -19,3 +20,20 @@ class CreateUserView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return response.Response({'id': serializer.instance.id}, status=status.HTTP_201_CREATED)
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    """Вьюсет обзоров."""
+
+    permission_classes = [permissions.IsAuthenticated & (IsAuthorOrReadOnlyPermission | permissions.IsAdminUser)]
+
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return api_models.Review.objects.none()
+        return super().get_queryset().select_related('author', 'product')
+
+    def get_serializer_class(self):
+        if self.action in ('create', 'update', 'partial_update'):
+            return api_serializers.ReviewCreateUpdateSerializer
+        return api_serializers.ReviewGetSerializer
+
