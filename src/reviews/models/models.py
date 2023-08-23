@@ -2,7 +2,6 @@ from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
-from django.utils.text import slugify
 
 from reviews.models.base_models import TitleUUIDMixin, UUIDMixin
 from reviews.validators import validate_image_size
@@ -14,7 +13,6 @@ class Category(TitleUUIDMixin):
 
     parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Надкатегория',
                                related_name='children')
-    slug = models.SlugField(verbose_name='Адрес для категории', unique=True, help_text='Укажите адрес для категории')
     img = models.ImageField(upload_to=get_path_upload_image, verbose_name='Изображение категории', blank=True,
                             null=True, help_text='Выберите изображение категории', validators=[
                                 FileExtensionValidator(allowed_extensions=['jpg', 'png']), validate_image_size])
@@ -32,17 +30,12 @@ class Category(TitleUUIDMixin):
             k = k.parent
         return ' -> '.join(full_path[::-1])
 
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        return super().save(*args, **kwargs)
-
 
 class Product(TitleUUIDMixin):
     """Продукт/Услуга."""
 
     category = models.ForeignKey(Category, verbose_name='Категория продукта/услуги', related_name='products',
                                  on_delete=models.PROTECT)
-    slug = models.SlugField(verbose_name='Ссылка на продукт/услугу', unique=True,)
     active = models.BooleanField(default=False)
 
     class Meta:
@@ -51,10 +44,6 @@ class Product(TitleUUIDMixin):
 
     def __str__(self):
         return self.title
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        return super().save(*args, **kwargs)
 
 
 class ScoreType(models.IntegerChoices):
@@ -71,7 +60,6 @@ class Review(TitleUUIDMixin):
     """Обзор."""
 
     product = models.ForeignKey(Product, verbose_name='Продукт', related_name='reviews', on_delete=models.CASCADE)
-    slug = models.SlugField(verbose_name='Ссылка', unique=True)
     text = models.TextField('Текст отзыва', blank=False, help_text='Добавьте текст отзыва')
     recommendation = models.BooleanField(blank=False, default=False, verbose_name='Рекомендуете друзьям?')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews')
@@ -96,10 +84,6 @@ class Review(TitleUUIDMixin):
 
     def __str__(self):
         return self.title
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        return super().save(*args, **kwargs)
 
 
 class AdditionalImage(UUIDMixin):
