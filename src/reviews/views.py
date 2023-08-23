@@ -34,6 +34,12 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):
-            return api_serializers.ReviewCreateUpdateSerializer
-        return api_serializers.ReviewGetSerializer
+            return api_serializers.ReviewWriteSerializer
+        return api_serializers.ReviewReadSerializer
 
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    """Вьюсет категорий."""
+
+    queryset = api_models.Category.objects.all()
+    serializer_class = api_serializers.CategorySerializer

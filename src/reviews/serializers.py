@@ -35,8 +35,18 @@ class IdResponseSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    """Сериализатор категорий."""
+
+    class Meta:
+        model = api_models.Category
+        fields = '__all__'
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор продукта/услуги."""
+
+    category = CategorySerializer()
 
     class Meta:
         model = api_models.Product
@@ -51,7 +61,7 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'first_name', 'last_name', 'email', 'is_active', 'last_activity')
 
 
-class ReviewGetSerializer(serializers.ModelSerializer):
+class ReviewReadSerializer(serializers.ModelSerializer):
     """Сериализатор просмотра обзоров."""
 
     product = ProductSerializer()
@@ -62,7 +72,7 @@ class ReviewGetSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ReviewCreateUpdateSerializer(serializers.ModelSerializer):
+class ReviewWriteSerializer(serializers.ModelSerializer):
     """Сериализатор создания/изменения обзоров."""
 
     class Meta:
