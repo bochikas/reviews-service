@@ -21,7 +21,7 @@ class TitleUUIDMixin(UUIDMixin):
         abstract = True
 
 
-class ActiveMixin(UUIDMixin):
+class ActiveMixin:
     """Миксин с полем 'активно'."""
 
     active = models.BooleanField(default=False)
