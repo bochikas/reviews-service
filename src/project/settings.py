@@ -124,3 +124,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Максимальный размер изображения в мб
 IMAGE_MAX_SIZE_MB = 5
+
+# Время хранения последней активности юзера в кэше
+USER_LAST_ACTIVITY_CACHE_TIMEOUT = 60*60*36

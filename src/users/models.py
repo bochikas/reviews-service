@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.cache import cache
 from django.db import models
 
 
@@ -14,10 +15,19 @@ class User(AbstractUser):
     is_company = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
     register_date = models.DateField(verbose_name='Дата регистрации', auto_now_add=True)
-    last_activity = models.DateTimeField(verbose_name='Последняя активность', null=True)
     gender = models.CharField(max_length=6, choices=GenderType.choices, verbose_name='Пол')
     photo = models.ImageField(blank=True, null=True, verbose_name='Аватар')
     dob = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
+    _last_activity = models.DateTimeField(verbose_name='Последняя активность', null=True)
+
+    @property
+    def last_activity(self):
+        return cache.get(self.get_cache_key()) or self._last_activity
+
+    def get_cache_key(self):
+        """Формирование ключа для кэша."""
+
+        return f'last_activity::{self.id}'
 
 
 class Account(models.Model):
