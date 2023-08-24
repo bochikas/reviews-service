@@ -30,7 +30,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return api_models.Review.objects.none()
-        return super().get_queryset().select_related('author', 'product')
+        return api_models.Review.objects.select_related('author', 'product')
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):

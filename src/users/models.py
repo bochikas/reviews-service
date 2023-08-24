@@ -1,3 +1,5 @@
+import pickle
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.cache import cache
@@ -22,7 +24,9 @@ class User(AbstractUser):
 
     @property
     def last_activity(self):
-        return cache.get(self.get_cache_key()) or self._last_activity
+        if val := cache.get(self.get_cache_key()):
+            return pickle.loads(val)
+        return self._last_activity
 
     def get_cache_key(self):
         """Формирование ключа для кэша."""

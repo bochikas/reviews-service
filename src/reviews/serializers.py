@@ -75,6 +75,10 @@ class ReviewReadSerializer(serializers.ModelSerializer):
 class ReviewWriteSerializer(serializers.ModelSerializer):
     """Сериализатор создания/изменения обзоров."""
 
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    product = serializers.PrimaryKeyRelatedField(queryset=api_models.Product.objects.all())
+
     class Meta:
         model = api_models.Review
-        fields = ('text', 'recommendation', 'price', 'image', 'score', 'pluses', 'minuses', 'active', 'location')
+        fields = ('text', 'recommendation', 'price', 'image', 'score', 'pluses', 'minuses', 'active', 'location',
+                  'author', 'product')
