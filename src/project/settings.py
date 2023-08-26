@@ -75,15 +75,20 @@ DATABASES = {
     }
 }
 
+REDIS_LOCATION = f"redis://{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}/{os.environ.get('REDIS_DB')}"
+
 CACHES = {
     'default': {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://{os.environ.get('REDIS_HOST')}:{os.environ.get('REDIS_PORT')}/{os.environ.get('REDIS_DB')}",
+        "BACKEND": 'django_redis.cache.RedisCache',
+        "LOCATION": REDIS_LOCATION,
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CLIENT_CLASS": 'django_redis.client.DefaultClient',
         }
     }
 }
+
+CELERY_BROKER_URL = REDIS_LOCATION
+CELERY_RESULT_BACKEND = REDIS_LOCATION
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -118,7 +123,7 @@ SIMPLE_JWT = {
 
 LANGUAGE_CODE = 'ru-RU'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 
