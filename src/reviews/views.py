@@ -11,6 +11,14 @@ from reviews.permissions import IsAuthorOrReadOnlyPermission
 User = get_user_model()
 
 
+class SoftDeleteDestroyModelMixin(mixins.DestroyModelMixin):
+    """Миксин с 'мягким' удалением."""
+
+    def perform_destroy(self, instance):
+        instance.deleted = True
+        instance.save()
+
+
 class CreateUserView(views.APIView):
     """Регистрация пользователей."""
 
@@ -57,7 +65,7 @@ class UserViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.Gen
         return response.Response(serializer.data)
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(SoftDeleteDestroyModelMixin, viewsets.ModelViewSet):
     """Вьюсет обзоров."""
 
     permission_classes = [permissions.IsAuthenticated & (IsAuthorOrReadOnlyPermission | permissions.IsAdminUser)]
@@ -73,7 +81,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return api_serializers.ReviewReadSerializer
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(SoftDeleteDestroyModelMixin, viewsets.ModelViewSet):
     """Вьюсет категорий."""
 
     queryset = api_models.Category.objects.all()
