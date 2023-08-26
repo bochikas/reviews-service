@@ -53,19 +53,28 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AuthorSerializer(serializers.ModelSerializer):
-    """Сериализатор автора обзора."""
+class UserEditSerializer(serializers.ModelSerializer):
+    """Сериализатор пользователей."""
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'is_active', 'last_activity')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'photo', 'dob', 'gender')
+        read_only_fields = ('id', 'username',)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор пользователей."""
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'last_activity')
 
 
 class ReviewReadSerializer(serializers.ModelSerializer):
     """Сериализатор просмотра обзоров."""
 
     product = ProductSerializer()
-    author = AuthorSerializer()
+    author = UserSerializer()
 
     class Meta:
         model = api_models.Review

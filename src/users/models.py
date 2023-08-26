@@ -6,6 +6,11 @@ from django.core.cache import cache
 from django.db import models
 
 
+class UserManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+
 class GenderType(models.IntegerChoices):
     MALE = 1
     FEMALE = 2
@@ -21,6 +26,11 @@ class User(AbstractUser):
     photo = models.ImageField(blank=True, null=True, verbose_name='Аватар')
     dob = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     _last_activity = models.DateTimeField(verbose_name='Последняя активность', null=True)
+
+    objects = UserManager()
+
+    class Meta(AbstractUser.Meta):
+        ordering = ('username',)
 
     @property
     def last_activity(self):

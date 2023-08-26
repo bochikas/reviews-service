@@ -1,15 +1,16 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from reviews.views import CategoryViewSet, CreateUserView, ReviewViewSet
+from reviews import views
 
 
 router = DefaultRouter()
-router.register('reviews', ReviewViewSet, 'reviews')
-router.register('categories', CategoryViewSet, 'categories')
+router.register('reviews', views.ReviewViewSet, 'reviews')
+router.register('categories', views.CategoryViewSet, 'categories')
+router.register('users', views.UserViewSet, 'users')
 
 
 urlpatterns = [
     path('v1/', include(router.urls)),
-    path('register/', CreateUserView.as_view(), name='api-create-user')
+    path('register/', views.CreateUserView.as_view(), name='api-create-user')
 ]

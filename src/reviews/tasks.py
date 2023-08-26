@@ -10,6 +10,8 @@ User = get_user_model()
 
 @shared_task()
 def update_users_last_activity():
+    """Обновление времени последней активности пользователей."""
+
     to_update = list()
     for user in User.objects.all():
         if user_cache := cache.get(user.get_cache_key()):
