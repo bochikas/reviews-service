@@ -12,7 +12,16 @@ class UUIDMixin(models.Model):
         abstract = True
 
 
-class TitleUUIDMixin(UUIDMixin):
+class UUIDDeletedMixin(UUIDMixin):
+    """Миксин с полем 'удалено'."""
+
+    deleted = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+
+class TitleUUIDDeletedMixin(UUIDDeletedMixin):
     """Миксин с названием."""
 
     title = models.CharField(verbose_name='Название', max_length=150, help_text='Добавьте название')

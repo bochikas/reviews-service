@@ -3,12 +3,12 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
 
-from reviews.models.base_models import ActiveMixin, TitleUUIDMixin, UUIDMixin
+from reviews.models import base_models
 from reviews.validators import validate_image_size
 from reviews.utils import get_path_upload_image
 
 
-class Category(TitleUUIDMixin, ActiveMixin):
+class Category(base_models.TitleUUIDDeletedMixin, base_models.ActiveMixin):
     """Категория."""
 
     parent = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True, verbose_name='Надкатегория',
@@ -30,7 +30,7 @@ class Category(TitleUUIDMixin, ActiveMixin):
         return ' -> '.join(full_path[::-1])
 
 
-class Product(TitleUUIDMixin, ActiveMixin):
+class Product(base_models.TitleUUIDDeletedMixin, base_models.ActiveMixin):
     """Продукт/Услуга."""
 
     category = models.ForeignKey(Category, verbose_name='Категория продукта/услуги', related_name='products',
@@ -54,7 +54,7 @@ class ScoreType(models.IntegerChoices):
     Perfect = 5, 'Отлично'
 
 
-class Review(TitleUUIDMixin):
+class Review(base_models.TitleUUIDDeletedMixin):
     """Обзор."""
 
     product = models.ForeignKey(Product, verbose_name='Продукт', related_name='reviews', on_delete=models.CASCADE)
@@ -84,7 +84,7 @@ class Review(TitleUUIDMixin):
         return self.title
 
 
-class AdditionalImage(UUIDMixin):
+class AdditionalImage(base_models.UUIDDeletedMixin):
     """Фото для обзора."""
 
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='additional_images')
@@ -92,7 +92,7 @@ class AdditionalImage(UUIDMixin):
                               validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png'])])
 
 
-class Bookmark(UUIDMixin):
+class Bookmark(base_models.UUIDDeletedMixin):
     """Закладки."""
 
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='bookmarks')
@@ -102,7 +102,7 @@ class Bookmark(UUIDMixin):
         return self.review, self.user
 
 
-class Comment(UUIDMixin):
+class Comment(base_models.UUIDDeletedMixin):
     """Комментарии."""
 
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
@@ -122,7 +122,7 @@ class Comment(UUIDMixin):
         return self.text[:15]
 
 
-class Subscriptions(UUIDMixin):
+class Subscriptions(base_models.UUIDDeletedMixin):
     """Подписки."""
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Подписчик', related_name='subscriptions',
@@ -140,7 +140,7 @@ class Subscriptions(UUIDMixin):
         return f'Подписчик - {self.user.username}, Автор - {self.author.username}'
 
 
-class Chat(UUIDMixin):
+class Chat(base_models.UUIDDeletedMixin):
     """Чат."""
 
     members = models.ManyToManyField(settings.AUTH_USER_MODEL, verbose_name='Участники')
@@ -150,7 +150,7 @@ class Chat(UUIDMixin):
         verbose_name_plural = 'Чаты'
 
 
-class Message(UUIDMixin):
+class Message(base_models.UUIDDeletedMixin):
     """Сообщения чата."""
 
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
