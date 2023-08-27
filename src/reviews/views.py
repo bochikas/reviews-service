@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 
 from reviews import serializers as api_serializers
 from reviews import models as api_models
+from reviews.filters import ReviewFilter
 from reviews.permissions import IsAuthorOrReadOnlyPermission
 
 
@@ -55,7 +56,7 @@ class UserViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.Gen
         return response.Response(serializer.data)
 
     @me.mapping.patch
-    def patch_me(self, request, ser):
+    def patch_me(self, request):
         """Редактирование своих данных."""
 
         instance = self.request.user
@@ -69,6 +70,7 @@ class ReviewViewSet(SoftDeleteDestroyModelMixin, viewsets.ModelViewSet):
     """Вьюсет обзоров."""
 
     permission_classes = [permissions.IsAuthenticated & (IsAuthorOrReadOnlyPermission | permissions.IsAdminUser)]
+    filterset_class = ReviewFilter
 
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
