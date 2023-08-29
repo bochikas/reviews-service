@@ -37,3 +37,12 @@ class ActiveMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class TextMixin(models.Model):
+    """Миксин с полем 'text'."""
+
+    text = models.CharField(max_length=255)
+
+    class Meta:
+        abstract = True

@@ -69,8 +69,8 @@ class Review(base_models.TitleUUIDDeletedMixin):
                               help_text='Выберите изображение', validators=[
                                     FileExtensionValidator(allowed_extensions=['jpg', 'png']), validate_image_size])
     score = models.PositiveSmallIntegerField(verbose_name='Оценка', choices=ScoreType.choices, default=3)
-    pluses = models.TextField(verbose_name='Достоинства', blank=False, help_text='Достоинства')
-    minuses = models.TextField('Недостатки', blank=False, help_text='Недостатки')
+    pluses = models.ManyToManyField('Plus', verbose_name='Достоинства')
+    minuses = models.ManyToManyField('Minus', verbose_name='Недостатки')
     active = models.BooleanField(default=False, verbose_name='Опубликовано')
     draft = models.BooleanField(default=False, verbose_name='Черновик')
     location = models.CharField(max_length=50, verbose_name='Расположение объекта')
@@ -82,6 +82,22 @@ class Review(base_models.TitleUUIDDeletedMixin):
 
     def __str__(self):
         return self.title
+
+
+class Plus(base_models.TextMixin, base_models.UUIDMixin):
+    """Плюсы."""
+
+    class Meta:
+        verbose_name = 'Плюс'
+        verbose_name_plural = 'Плюсы'
+
+
+class Minus(base_models.TextMixin, base_models.UUIDMixin):
+    """Минусы."""
+
+    class Meta:
+        verbose_name = 'Минус'
+        verbose_name_plural = 'Минусы'
 
 
 class AdditionalImage(base_models.UUIDDeletedMixin):

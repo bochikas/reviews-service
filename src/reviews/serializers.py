@@ -78,7 +78,8 @@ class ReviewReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = api_models.Review
-        fields = '__all__'
+        fields = ('id', 'product', 'author', 'title', 'text', 'recommendation', 'price', 'pub_date', 'upd_date',
+                  'image', 'score', 'pluses', 'minuses', 'location')
 
 
 class ReviewWriteSerializer(serializers.ModelSerializer):

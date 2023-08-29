@@ -1,12 +1,13 @@
 import pickle
 
 from django.conf import settings
+from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.core.cache import cache
 from django.db import models
 
 
-class UserManager(models.Manager):
+class UserManager(BaseUserManager):
     def get_queryset(self):
         return super().get_queryset().filter(is_active=True)
 
