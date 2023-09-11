@@ -8,8 +8,16 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
+
+    def active(self):
+        return self.get_queryset().filter(is_active=True)
+
+    def create_new(self, data):
+        password = data.pop('password')
+        user = self.model(**data)
+        user.set_password(password)
+        user.save()
+        return user
 
 
 class GenderType(models.IntegerChoices):
@@ -38,6 +46,10 @@ class User(AbstractUser):
         if val := cache.get(self.get_cache_key()):
             return pickle.loads(val)
         return self._last_activity
+
+    @property
+    def full_name(self):
+        return self.get_full_name()
 
     def get_cache_key(self):
         """Формирование ключа для кэша."""

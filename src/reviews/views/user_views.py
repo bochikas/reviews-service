@@ -3,7 +3,7 @@ from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import mixins, permissions, response, status, views, viewsets
 from rest_framework.decorators import action
 
-from reviews import serializers as api_serializers
+from reviews.serializers import IdResponseSerializer, UserSerializer, UserEditSerializer
 
 User = get_user_model()
 
@@ -11,29 +11,27 @@ User = get_user_model()
 class CreateUserView(views.APIView):
     """Регистрация пользователей."""
 
-    serializer = api_serializers.CreateUserSerializer
-
-    @extend_schema(request=api_serializers.CreateUserSerializer,
-                   responses={201: OpenApiResponse(response=api_serializers.IdResponseSerializer,
+    @extend_schema(request=UserSerializer,
+                   responses={201: OpenApiResponse(response=IdResponseSerializer,
                                                    description='Created. Id in response'),
                               400: OpenApiResponse(description='Bad request')})
     def post(self, request):
-        serializer = self.serializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return response.Response({'id': serializer.instance.id}, status=status.HTTP_201_CREATED)
+        user = User.objects.create_new(serializer.validated_data)
+        return response.Response({'id': user.id}, status=status.HTTP_201_CREATED)
 
 
 class UserViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """Вьюсет пользователей."""
 
-    queryset = User.objects.all()
+    queryset = User.objects.active()
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action in ('me', 'patch_me'):
-            return api_serializers.UserEditSerializer
-        return api_serializers.UserSerializer
+            return UserEditSerializer
+        return UserSerializer
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request, *args, **kwargs):

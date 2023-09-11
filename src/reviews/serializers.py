@@ -8,8 +8,8 @@ from reviews.validators import validate_password
 User = get_user_model()
 
 
-class CreateUserSerializer(serializers.ModelSerializer):
-    """Сериализатор создания пользователя."""
+class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор пользователей."""
 
     email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())], required=False)
 
@@ -18,15 +18,8 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'first_name', 'last_name', 'password')
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'password')
         extra_kwargs = {'password': {'write_only': True}}
-
-    def create(self, validated_data):
-        user = super().create(validated_data)
-        password = validated_data.get('password')
-        user.set_password(password)
-        user.save()
-        return user
 
 
 class IdResponseSerializer(serializers.Serializer):
@@ -60,14 +53,6 @@ class UserEditSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'first_name', 'last_name', 'email', 'photo', 'dob', 'gender')
         read_only_fields = ('id', 'username',)
-
-
-class UserSerializer(serializers.ModelSerializer):
-    """Сериализатор пользователей."""
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'last_activity')
 
 
 class ReviewReadSerializer(serializers.ModelSerializer):

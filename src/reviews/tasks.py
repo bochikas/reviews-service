@@ -13,7 +13,7 @@ def update_users_last_activity():
     """Обновление времени последней активности пользователей."""
 
     to_update = list()
-    for user in User.objects.all():
+    for user in User.objects.active():
         if user_cache := cache.get(user.get_cache_key()):
             user._last_activity = pickle.loads(user_cache)
             to_update.append(user)
