@@ -10,7 +10,11 @@ from django.db import models
 class UserManager(BaseUserManager):
 
     def active(self):
-        return self.get_queryset().filter(is_active=True)
+        return self.get_queryset().filter(is_active=True).prefetch_related(
+            'reviews', 'reviews__product'
+        ).annotate(
+            reviews_cnt=models.Count('reviews')
+        ).order_by('username')
 
 
 class GenderType(models.IntegerChoices):

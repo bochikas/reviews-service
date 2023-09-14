@@ -8,17 +8,29 @@ from reviews.validators import validate_password
 User = get_user_model()
 
 
+class ReviewMinifiedReadSerializer(serializers.ModelSerializer):
+    """Сериализатор просмотра обзоров."""
+
+    product_title = serializers.CharField(source='product.title')
+
+    class Meta:
+        model = api_models.Review
+        fields = ('id', 'product_title', 'title', )
+
+
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор пользователей."""
 
     email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())], required=False)
+    reviews_cnt = serializers.IntegerField()
+    reviews = ReviewMinifiedReadSerializer(many=True)
 
     def validate_password(self, value):
         return validate_password(value, User)
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'password')
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'password', 'reviews_cnt', 'reviews')
         extra_kwargs = {'password': {'write_only': True}}
 
 
