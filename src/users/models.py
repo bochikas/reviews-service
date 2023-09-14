@@ -12,13 +12,6 @@ class UserManager(BaseUserManager):
     def active(self):
         return self.get_queryset().filter(is_active=True)
 
-    def create_new(self, data):
-        password = data.pop('password')
-        user = self.model(**data)
-        user.set_password(password)
-        user.save()
-        return user
-
 
 class GenderType(models.IntegerChoices):
     MALE = 1
