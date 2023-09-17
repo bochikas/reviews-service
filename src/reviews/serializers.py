@@ -67,11 +67,19 @@ class UserEditSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'username',)
 
 
+class UserMinifiedSerializer(serializers.ModelSerializer):
+    """Сокращенный сериализатор пользователей."""
+
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'username', 'first_name', 'last_name')
+
+
 class ReviewReadSerializer(serializers.ModelSerializer):
     """Сериализатор просмотра обзоров."""
 
     product = ProductSerializer()
-    author = UserSerializer()
+    author = UserMinifiedSerializer()
 
     class Meta:
         model = api_models.Review
@@ -87,5 +95,5 @@ class ReviewWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = api_models.Review
-        fields = ('text', 'recommendation', 'price', 'image', 'score', 'pluses', 'minuses', 'active', 'location',
-                  'author', 'product')
+        fields = ('id', 'title', 'text', 'recommendation', 'price', 'image', 'score', 'pluses', 'minuses', 'active',
+                  'location', 'product', 'author')
