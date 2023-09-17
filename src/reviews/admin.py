@@ -40,4 +40,3 @@ class PlusAdmin(admin.ModelAdmin):
 @admin.register(Minus)
 class MinusAdmin(admin.ModelAdmin):
     list_display = ('id', 'text', )
-

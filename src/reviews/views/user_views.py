@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema, OpenApiResponse
-from rest_framework import mixins, permissions, response, status, views, viewsets
+from rest_framework import permissions, response, status, views, viewsets
 
 from reviews.serializers import IdResponseSerializer, UserSerializer, UserEditSerializer
 from reviews.services import create_user, update_user
@@ -44,7 +44,7 @@ class HandleUserView(views.APIView):
         return response.Response(self.serializer(instance).data)
 
 
-class UserViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """Вьюсет пользователей."""
 
     queryset = User.objects.active()
