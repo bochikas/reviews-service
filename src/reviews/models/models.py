@@ -54,6 +54,16 @@ class ScoreType(models.IntegerChoices):
     Perfect = 5, 'Отлично'
 
 
+class ReviewManager(models.Manager):
+
+    def active(self):
+        return self.get_queryset().filter(deleted=False).select_related(
+            'product', 'author'
+        ).prefetch_related(
+            'minuses', 'pluses'
+        ).order_by('id')
+
+
 class Review(base_models.TitleUUIDDeletedMixin):
     """Обзор."""
 
@@ -74,6 +84,8 @@ class Review(base_models.TitleUUIDDeletedMixin):
     active = models.BooleanField(default=False, verbose_name='Опубликовано')
     draft = models.BooleanField(default=False, verbose_name='Черновик')
     location = models.CharField(max_length=50, verbose_name='Расположение объекта')
+
+    objects = ReviewManager()
 
     class Meta:
         verbose_name = 'Отзыв'
