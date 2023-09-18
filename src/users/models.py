@@ -10,10 +10,13 @@ from django.db import models
 class UserManager(BaseUserManager):
 
     def active(self):
+        from reviews.models import Review
+        reviews = Review.objects.active().annotate(product_title=models.F('product__title'))
+
         return self.get_queryset().filter(is_active=True).prefetch_related(
-            'reviews', 'reviews__product'
+            models.Prefetch('reviews', queryset=reviews)
         ).annotate(
-            reviews_cnt=models.Count('reviews')
+            reviews_cnt=models.Count('reviews', filter=models.Q(reviews__deleted=False)),
         ).order_by('username')
 
 

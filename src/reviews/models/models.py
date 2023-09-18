@@ -57,7 +57,10 @@ class ScoreType(models.IntegerChoices):
 class ReviewManager(models.Manager):
 
     def active(self):
-        return self.get_queryset().filter(deleted=False).select_related(
+        return self.get_queryset().filter(deleted=False).order_by('id')
+
+    def active_select_prefetch(self):
+        return self.active().select_related(
             'product', 'author'
         ).prefetch_related(
             'minuses', 'pluses'

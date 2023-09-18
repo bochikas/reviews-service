@@ -15,7 +15,7 @@ class ReviewViewSet(SoftDeleteDestroyModelMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):  # для правильной работы drf-spectacular
             return api_models.Review.objects.none()
-        return api_models.Review.objects.active()
+        return api_models.Review.objects.active_select_prefetch()
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):

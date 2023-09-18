@@ -11,7 +11,7 @@ User = get_user_model()
 class ReviewMinifiedReadSerializer(serializers.ModelSerializer):
     """Сериализатор просмотра обзоров."""
 
-    product_title = serializers.CharField(source='product.title')
+    product_title = serializers.CharField()
 
     class Meta:
         model = api_models.Review
