@@ -8,6 +8,13 @@ from reviews.validators import validate_image_size
 from reviews.utils import get_path_upload_image
 
 
+class CategoryManager(models.Manager):
+    """Менеджер категорий."""
+
+    def active(self):
+        return self.get_queryset().filter(deleted=False).order_by('id')
+
+
 class Category(base_models.TitleUUIDDeletedMixin, base_models.ActiveMixin):
     """Категория."""
 

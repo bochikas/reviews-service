@@ -40,18 +40,26 @@ class IdResponseSerializer(serializers.Serializer):
     id = serializers.IntegerField(min_value=1)
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategoryReadSerializer(serializers.ModelSerializer):
     """Сериализатор категорий."""
 
     class Meta:
         model = api_models.Category
-        fields = '__all__'
+        fields = ('id', 'title', 'parent', 'img')
+
+
+class CategoryWriteSerializer(serializers.ModelSerializer):
+    """Сериализатор категорий."""
+
+    class Meta:
+        model = api_models.Category
+        fields = ('id', 'title', 'parent', 'img')
 
 
 class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор продукта/услуги."""
 
-    category = CategorySerializer()
+    category = CategoryReadSerializer()
 
     class Meta:
         model = api_models.Product
